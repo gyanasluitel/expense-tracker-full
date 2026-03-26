@@ -1,8 +1,11 @@
-import { UserAuthRequest } from "../interfaces/user";
+import { NUMBER_OF_SALT_ROUNDS } from "../constants/auth";
+import { UserLoginRequest, UserRegisterRequest } from "../interfaces/user";
 import UserModel from "../models/UserModel";
+import bcrypt from "bcrypt";
+import { generateAccessToken, generateRefreshToken } from "../utils/auth";
+import SessionModel from "../models/SessionModel";
 
-export const register = async (data: UserAuthRequest) => {
-    // Implementation goes here
+export const register = async (data: UserRegisterRequest) => {
     const { name, email, password } = data;
 
     const existingUser = await UserModel.findOne({ email });
@@ -11,5 +14,39 @@ export const register = async (data: UserAuthRequest) => {
         throw new Error("User already exists");
     }
 
-    return await UserModel.create({ name, email, password });
+    const hashedPassword = await bcrypt.hash(password, NUMBER_OF_SALT_ROUNDS);
+
+    return await UserModel.create({ name, email, password: hashedPassword });
+}
+
+
+export const login = async (data: UserLoginRequest) => {
+    const { email, password } = data;
+
+    const user = await UserModel.findOne({ email }).select("+password");
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+        throw new Error("Invalid password");
+    }
+
+    const accessToken = await generateAccessToken(user);
+    const refreshToken = await generateRefreshToken(user);
+
+    // Assignment: Use the expiry date from the refresh token
+    await SessionModel.create({ userId: user._id, refreshToken, expiresAt:  new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)})
+
+    return { 
+        accessToken, 
+        refreshToken,
+        user: {
+            id: user._id,
+            name: user.name,
+            email: user.email
+    }};
 }

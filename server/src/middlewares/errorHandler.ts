@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express"
+import { errorResponse } from "../utils/responseHelper";
 
 export const errorHandler = (
     error: any,
@@ -8,7 +9,5 @@ export const errorHandler = (
 ) => {
     const { status, message } = error;    
 
-    res.status(status || 500).json({
-        message: message || "Something went wrong!"
-    })
+    return errorResponse(res, { status, message })
 }

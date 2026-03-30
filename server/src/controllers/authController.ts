@@ -12,8 +12,6 @@ export const register = async (
         await authServices.register(req.body);
 
         return successResponse(res, { status: httpCodes.RESOURCE_CREATED.statusCode })
-
-        res.status(httpCodes.RESOURCE_CREATED.statusCode).send({});
     } catch (error) {
         next(error);
     }

@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from "express";
-import * as userServices from "../services/userServices";
 import { successResponse } from "../utils/responseHelper";
+import * as permissionServices from "../services/permissionServices";
 
-export const getAll = async (
+export const create = async (
     req: Request,
     res: Response,
     next: NextFunction
 ) => {
     try {
-        const response = await userServices.getAll();
+        const response = await permissionServices.create(req.body);
 
         return successResponse(res, { data: response })
 

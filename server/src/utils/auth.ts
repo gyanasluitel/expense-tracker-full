@@ -1,14 +1,17 @@
 import jwt from "jsonwebtoken";
 import { IUser } from "../models/UserModel";
 import { config } from "../config";
+import { UserWithRolesAndPermission } from "../interfaces/user";
 
-export const generateAccessToken = (user : IUser) => {
+export const generateAccessToken = (user : UserWithRolesAndPermission, roles?: string[], permissions?: string[] ) => {
     // Assignment_todo: Check whether JWT_SECRET is there or not (Need to create a function that checks against all required Secrets & does not open server if not present)
 
     return jwt.sign(
         {
             userId: user._id,
-            email: user.email
+            email: user.email,
+            roles,
+            permissions
         }, // payload
         config.JWT_SECRET,
         { "expiresIn": "30m" }
@@ -16,7 +19,7 @@ export const generateAccessToken = (user : IUser) => {
 }
 
 
-export const generateRefreshToken = (user : IUser) => {
+export const generateRefreshToken = (user : UserWithRolesAndPermission) => {
     return jwt.sign(
         {
             userId: user._id,

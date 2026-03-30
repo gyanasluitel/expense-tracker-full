@@ -1,9 +1,10 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Document, Types } from "mongoose";
 
 export interface IUser extends Document {
     name: string;
     email: string;
     password: string;
+    roles?: Types.ObjectId[]; // Array of role IDs
 }
 
 const userSchema = new Schema<IUser>({
@@ -20,7 +21,13 @@ const userSchema = new Schema<IUser>({
         type: String,
         required: true,
         select: false
-    }
+    },
+    roles: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Role"
+        }
+    ]
 }, {
     timestamps: true
 })

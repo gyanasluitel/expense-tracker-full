@@ -1,5 +1,5 @@
 import { NUMBER_OF_SALT_ROUNDS } from "../constants/auth";
-import { Permission, UserLoginRequest, UserRegisterRequest, Role, UserWithRolesAndPermission } from "../interfaces/user";
+import { Permission, UserLoginRequest, UserRegisterRequest, UserWithRolesAndPermission } from "../interfaces/user";
 import UserModel from "../models/UserModel";
 import bcrypt from "bcrypt";
 import { generateAccessToken, generateRefreshToken } from "../utils/auth";
@@ -60,15 +60,16 @@ export const login = async (data: UserLoginRequest) => {
     const refreshToken = await generateRefreshToken(user);
         
     // Assignment: Use the expiry date from the refresh token
-    await SessionModel.create({ userId: user._id, refreshToken, expiresAt:  new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)})
+    await SessionModel.create({ userId: user.id, refreshToken, expiresAt:  new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)})
 
     return { 
         accessToken, 
         refreshToken,
         user: {
-            id: user._id,
+            id: user.id,
             name: user.name,
             email: user.email,
+            roles,
             permissions
         }
     };

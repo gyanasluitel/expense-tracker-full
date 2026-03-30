@@ -13,7 +13,7 @@ export interface UserLoginRequest {
 }
 
 export interface AuthenticatedUser {
-    _id: string;
+    id: string;
     name: string;
     email: string;
     roles: string[];
@@ -21,20 +21,20 @@ export interface AuthenticatedUser {
 }
 
 export interface Permission {
-    _id: mongoose.Types.ObjectId;
+    id: string;
     name: string;
     description: string;
 }
 
 export interface Role {
-    _id: mongoose.Types.ObjectId;
+    id: string;
     name: string;
     description: string;
     permissions: Permission[];
 }
 
 export interface UserWithRolesAndPermission {
-    _id: mongoose.Types.ObjectId;
+    id: string;
     name: string;
     email: string;
     password: string;

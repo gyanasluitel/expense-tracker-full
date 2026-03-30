@@ -20,6 +20,17 @@ const roleSchema = new Schema<IRole>({
         type: Schema.Types.ObjectId,
         ref: "Permission"
     }]
+}, {
+    timestamps: true,
+    toJSON: {
+        transform: (_, ret) => {
+            const { _id, __v, ...rest} = ret;
+            return {
+                id: _id,
+                ...rest
+            }
+        }
+    }
 })
 
 const RoleModel = model<IRole>("Role", roleSchema);

@@ -29,7 +29,16 @@ const userSchema = new Schema<IUser>({
         }
     ]
 }, {
-    timestamps: true
+    timestamps: true,
+    toJSON: {
+        transform: (_, ret) => {
+            const { _id, __v, ...rest} = ret;
+            return {
+                id: _id,
+                ...rest
+            }
+        }
+    }
 })
 
 export const UserModel = model<IUser>("User", userSchema);

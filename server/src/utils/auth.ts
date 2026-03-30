@@ -8,7 +8,7 @@ export const generateAccessToken = (user : UserWithRolesAndPermission, roles?: s
 
     return jwt.sign(
         {
-            userId: user._id,
+            userId: user.id,
             email: user.email,
             roles,
             permissions
@@ -22,7 +22,7 @@ export const generateAccessToken = (user : UserWithRolesAndPermission, roles?: s
 export const generateRefreshToken = (user : UserWithRolesAndPermission) => {
     return jwt.sign(
         {
-            userId: user._id,
+            userId: user.id,
             email: user.email
         },
         config.JWT_SECRET, // Assignment: Use different secret for creating refresh token

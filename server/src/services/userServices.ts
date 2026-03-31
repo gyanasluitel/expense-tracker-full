@@ -9,3 +9,12 @@ export const getAll = async () => {
         }
     });
 }
+
+export const getById = async (userId: string) => {
+    return await UserModel.findById(userId).populate({
+        path: "roles",
+        populate: {
+            path: "permissions",
+        }
+    });
+}

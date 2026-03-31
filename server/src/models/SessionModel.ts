@@ -19,6 +19,17 @@ const sessionSchema = new Schema<ISession>({
         type: Date,
         required: true
     }
+}, {
+    timestamps: true,
+    toJSON: {
+      transform: (_, ret) => {
+        const { _id, __v, ...rest} = ret;
+          return {
+            id: _id,
+              ...rest
+          }
+        }
+    }
 })
 
 const SessionModel = model<ISession>("Session", sessionSchema);

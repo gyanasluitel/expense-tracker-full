@@ -1,10 +1,7 @@
-import mongoose from "mongoose";
-
 export interface UserRegisterRequest  {
     name: string;
     email: string;
     password: string;
-    roles?: string[]; // Optional roles field for roles & permissions
 }
 
 export interface UserLoginRequest {

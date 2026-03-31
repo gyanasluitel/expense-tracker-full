@@ -35,5 +35,5 @@ export const create = async (data: CreateRoleRequest) => {
 }
 
 export const getAll = async () => {
-    return await RoleModel.find().populate("permissions", "name description");
+    return await RoleModel.find().populate("permissions");
 }

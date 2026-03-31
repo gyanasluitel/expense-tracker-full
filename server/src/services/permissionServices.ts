@@ -12,3 +12,7 @@ export const create = async (data: PermissionRequest) => {
 
     return await PermissionModel.create({ name, description });
 }
+
+export const getAll = async () => {
+    return await PermissionModel.find({});
+}

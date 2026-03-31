@@ -1,5 +1,5 @@
 import { NUMBER_OF_SALT_ROUNDS } from "../constants/auth";
-import { Permission, UserLoginRequest, UserRegisterRequest, UserWithRolesAndPermission } from "../interfaces/user";
+import { UserLoginRequest, UserRegisterRequest, UserWithRolesAndPermission } from "../interfaces/user";
 import UserModel from "../models/UserModel";
 import bcrypt from "bcrypt";
 import { generateAccessToken, generateRefreshToken } from "../utils/auth";
@@ -8,7 +8,7 @@ import mongoose from "mongoose";
 import RoleModel from "../models/RoleModel";
 
 export const register = async (data: UserRegisterRequest) => {
-    const { name, email, password, roles } = data;
+    const { name, email, password } = data;
 
     const existingUser = await UserModel.findOne({ email });
     
@@ -16,20 +16,9 @@ export const register = async (data: UserRegisterRequest) => {
         throw new Error("User already exists");
     }
 
-    let roleIds: mongoose.Types.ObjectId [] = [];
-
-    if (roles && roles.length > 0) {
-        const fetchedRoles = await RoleModel.find({ name: { $in: roles } });
-        roleIds = fetchedRoles.map(role => role._id);
-
-        if (roleIds.length !== roles.length) {
-            throw new Error("One or more roles do not exist");
-        }
-    }
-
     const hashedPassword = await bcrypt.hash(password, NUMBER_OF_SALT_ROUNDS);
 
-    return await UserModel.create({ name, email, password: hashedPassword, roles: roleIds });
+    return await UserModel.create({ name, email, password: hashedPassword });
 }
 
 

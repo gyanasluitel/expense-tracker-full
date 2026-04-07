@@ -11,6 +11,6 @@ router.get("/me", authenticate, userController.getMe);
 router.get("/", authenticate, authorizeWithPermission({ permission: appPermissions.VIEW_USERS.name }), userController.getAll);
 
 // Example of a protected route that requires "MANAGE_USERS" permission to update user roles
-router.patch("/:userId/roles", authenticate, authorizeWithPermission({ permission: appPermissions.MANAGE_USERS.name }), () => {});
+router.patch("/:userId/roles", authenticate, authorizeWithPermission({ permission: appPermissions.MANAGE_USERS.name }), userController.updateUserRoles);
 
 export default router;

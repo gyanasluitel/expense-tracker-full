@@ -13,6 +13,7 @@ const http = axios.create({
 
 http.interceptors.request.use((config) => {
     if (config.headers) {
+        // Get access token from the store (Hint: Do not use dispatch)
         config.headers.Authorization = `Bearer ${getAccessToken()}`
     }
 
@@ -20,8 +21,7 @@ http.interceptors.request.use((config) => {
 })
 
 http.interceptors.response.use((response) => {
-    console.log({response});
-    return response.data?.data
+    return response.data
 }, (error) => {
     console.log(error);
 })

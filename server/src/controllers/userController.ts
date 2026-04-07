@@ -38,3 +38,25 @@ export const getMe = async (
         next(error);
     }
 }
+
+export const updateUserRoles = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { userId } = req.params;
+        const { roleList } = req.body;
+
+        if (!userId) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+
+        const response = await userServices.updateUserRoles(String(userId), roleList);
+
+        return successResponse(res, { data: response })
+
+    } catch (error) {
+        next(error);
+    }
+}

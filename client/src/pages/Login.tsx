@@ -4,13 +4,18 @@ import { loginSchema } from '../schemas/auth';
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { z } from "zod";
 import { toast } from "react-toastify";
-import { login } from '../api/auth';
-import * as storage from "../utils/storage";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from '../constants/storage';
+import { useAppDispatch, useAppSelector } from '../hooks/storeHooks';
+import { loginUser } from '../store/slices/authSlice';
+import { useNavigate } from 'react-router';
+import { useEffect } from 'react';
 
 export type LoginFormData = z.infer<typeof loginSchema>
 
 const Login = () => {
+    const dispatch = useAppDispatch();
+    const { isAuthenticated, loading } = useAppSelector(state => state.auth);
+    const navigate = useNavigate();
+
     const { handleSubmit, register, formState: { errors } } = useForm({
         resolver: zodResolver(loginSchema),
         mode: "onBlur"
@@ -18,10 +23,9 @@ const Login = () => {
 
     const onSubmit = async (data: LoginFormData) => {
         try {
-            const { accessToken, refreshToken } = await login(data);
-
-            await storage.set(ACCESS_TOKEN, accessToken);
-            await storage.set(REFRESH_TOKEN, refreshToken);
+            // Read the documentation about "unwrap"
+            // Question will be asked to Umesh Bogati
+            dispatch(loginUser(data)).unwrap();
 
             toast("Successful login", {type: "success"});
         }
@@ -30,7 +34,15 @@ const Login = () => {
             toast("Error logging in user", {type: "error"});
         }
     }
-    
+
+    // If user is logged in, they should not see LogIn page
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate("/")
+        }
+    }, [isAuthenticated, navigate])
+
+
     return (
         <Box  margin="40px auto" maxWidth={600} padding={4} boxShadow="0 0 10px rgba(0,0,0,0.1)" borderRadius={2}>
             <Box>
@@ -42,7 +54,7 @@ const Login = () => {
                     <TextField label="Email" {...register("email")} error={!!errors.email} helperText={errors.email?.message} />
                     {/* // Toggle password show/hide based on an icon. Use `useState` to track the password */}
                     <TextField label="Password" {...register("password")} error={!!errors.password} helperText={errors.password?.message}  />
-                    <Button type='submit' variant='contained' color='primary' fullWidth>Login</Button>
+                    <Button type='submit' variant='contained' color='primary' fullWidth disabled={loading || isAuthenticated} loading={loading}>Login</Button>
                 </Box>
             </form>
         </Box>

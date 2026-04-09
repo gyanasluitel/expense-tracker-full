@@ -1,10 +1,9 @@
 import mongoose from "mongoose";
-import { CreateRoleRequest } from "../interfaces/role";
 import RoleModel from "../models/RoleModel";
 import PermissionModel from "../models/PermissionModel";
-import { permission } from "node:process";
+import { CreateRoleWithPermissionRequest } from "../interfaces/role";
 
-export const create = async (data: CreateRoleRequest) => {
+export const create = async (data: CreateRoleWithPermissionRequest) => {
     const { name, description, permissions } = data;
 
     const existingRole = await RoleModel.findOne({ name });

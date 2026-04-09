@@ -1,4 +1,3 @@
-import path from "node:path";
 import UserModel from "../models/UserModel";
 import mongoose from "mongoose";
 import RoleModel from "../models/RoleModel";

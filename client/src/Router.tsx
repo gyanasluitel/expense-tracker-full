@@ -3,6 +3,8 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import appPermissions from "./constants/appPermissions";
+import AllUsers from "./pages/AllUsers";
+import UserPage from "./pages/UserPage";
 
 const Router = () => {
     return (
@@ -15,10 +17,12 @@ const Router = () => {
                 path="/all-users" 
                 element={
                     <ProtectedRoute requiredPermissions={[appPermissions.VIEW_USERS.name]}>
-                        <h1>Hola, this is all users</h1>
+                        <AllUsers />
                     </ProtectedRoute>
                 } 
             />
+
+            <Route path="/users/:id" element={<ProtectedRoute requiredPermissions={[appPermissions.VIEW_USERS.name]}><UserPage /></ProtectedRoute>} />
 
             <Route path="*" element={<h1>Not Found</h1>} />
         </Routes>

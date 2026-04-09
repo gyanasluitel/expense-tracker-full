@@ -4,8 +4,6 @@ import UserModel from "../models/UserModel";
 import bcrypt from "bcrypt";
 import { generateAccessToken, generateRefreshToken } from "../utils/auth";
 import SessionModel from "../models/SessionModel";
-import mongoose from "mongoose";
-import RoleModel from "../models/RoleModel";
 
 export const register = async (data: UserRegisterRequest) => {
     const { name, email, password } = data;
@@ -62,4 +60,42 @@ export const login = async (data: UserLoginRequest) => {
             permissions
         }
     };
+}
+
+export const generateAccessTokenBasedOnRefreshToken = async (refreshToken: string) => {
+    const session = await SessionModel.findOne({ refreshToken });
+
+    if (!session) {
+        throw new Error("Invalid refresh token");
+    }
+
+    const user = await UserModel.findOne({ _id: session.userId }).populate({
+        path: "roles",
+        populate: {
+            path: "permissions",
+        }
+    }).select("+password") as UserWithRolesAndPermission;
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+    const roles = user?.roles?.map((role) => role.name) ?? [];
+    const permissions = user?.roles?.flatMap((role) => role.permissions?.map((permission) => permission.name) ?? []) ?? [];
+
+    const accessToken = generateAccessToken(user, roles, permissions);
+
+    return {
+        accessToken,
+    };
+}
+
+export const logout = async (refreshToken: string) => {
+    // Get the userId from the refresh token and delete all refresh tokens of the user from the database to logout from all devices
+    const session = await SessionModel.findOne({ refreshToken });
+
+    if (!session) {
+        throw new Error("Invalid refresh token");
+    }
+
+    await SessionModel.deleteMany({ userId: session?.userId });
 }

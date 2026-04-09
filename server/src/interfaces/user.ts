@@ -1,3 +1,5 @@
+import { RoleWithPermission } from "./role";
+
 export interface UserRegisterRequest  {
     name: string;
     email: string;
@@ -10,30 +12,20 @@ export interface UserLoginRequest {
 }
 
 export interface AuthenticatedUser {
-    id: string;
+    userId: string;
     name: string;
     email: string;
     roles: string[];
     permissions: string[];
 }
 
-export interface Permission {
-    id: string;
-    name: string;
-    description: string;
-}
-
-export interface Role {
-    id: string;
-    name: string;
-    description: string;
-    permissions: Permission[];
-}
-
-export interface UserWithRolesAndPermission {
+export interface User {
     id: string;
     name: string;
     email: string;
     password: string;
-    roles: Role[];
+}
+
+export interface UserWithRolesAndPermission extends User {
+    roles: RoleWithPermission[];
 }

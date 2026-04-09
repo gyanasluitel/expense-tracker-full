@@ -3,11 +3,12 @@ import { useNavigate } from "react-router";
 import { useAppDispatch, useAppSelector } from "../hooks/storeHooks";
 import { logoutUser } from "../store/slices/authSlice";
 import appPermissions from "../constants/appPermissions";
+import appRoles from "../constants/appRoles";
 
 const Navbar = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-    const { isAuthenticated, refreshToken, permissions } = useAppSelector(state => state.auth);
+    const { isAuthenticated, refreshToken, permissions, roles } = useAppSelector(state => state.auth);
 
     const handleLogout = () => {
         if (refreshToken) {
@@ -15,7 +16,7 @@ const Navbar = () => {
         }
     };
 
-    const doesUserHaveViePermission = permissions.includes(appPermissions.VIEW_USERS.name);
+    const doesUserHaveViewPermission = roles.includes(appRoles.SUPER_ADMIN.name) || permissions.includes(appPermissions.VIEW_USERS.name);
 
     return (
         <AppBar position="static">
@@ -40,7 +41,7 @@ const Navbar = () => {
                         </>
                     ) : (
                         <>
-                        { doesUserHaveViePermission && 
+                        { doesUserHaveViewPermission && 
                             <Button color="inherit" onClick={() => navigate("/all-users")}>View All Users</Button>
                         }
                             <Button color="inherit" onClick={handleLogout}>

@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import * as userServices from "../services/userServices";
-import { successResponse } from "../utils/responseHelper";
+import { errorResponse, successResponse } from "../utils/responseHelper";
 import { AuthRequest } from "../middlewares/authenticate";
+import httpCodes from "../constants/httpCodes";
 
 export const getAll = async (
     req: Request,
@@ -24,10 +25,10 @@ export const getMe = async (
     next: NextFunction
 ) => {
     try {
-        const userId = req.user?.id;
+        const userId = req.user?.userId;
 
         if (!userId) {
-            return res.status(401).json({ message: "Unauthorized" });
+            return errorResponse(res, { status: httpCodes.BAD_REQUEST.statusCode, message: "Missing userId in the request query" });
         }
 
         const response = await userServices.getById(userId);
@@ -49,7 +50,7 @@ export const updateUserRoles = async (
         const { roleList } = req.body;
 
         if (!userId) {
-            return res.status(401).json({ message: "Unauthorized" });
+            return errorResponse(res, { status: httpCodes.BAD_REQUEST.statusCode, message: "Missing userId in the request query" });
         }
 
         const response = await userServices.updateUserRoles(String(userId), roleList);
@@ -58,5 +59,26 @@ export const updateUserRoles = async (
 
     } catch (error) {
         next(error);
+    }
+}
+
+export const getById = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { userId } = req.params;
+
+        if (!userId) {
+            return errorResponse(res, { status: httpCodes.BAD_REQUEST.statusCode, message: "Missing userId in the request query" });
+        }
+
+        const response = await userServices.getById(String(userId));
+
+        return successResponse(res, { data: response })
+    }
+    catch (error) {
+        next(error)
     }
 }

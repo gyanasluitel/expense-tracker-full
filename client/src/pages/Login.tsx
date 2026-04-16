@@ -28,6 +28,7 @@ const Login = () => {
             dispatch(loginUser(data)).unwrap();
 
             toast("Successful login", {type: "success"});
+            navigate("/")
         }
         catch (error) {
             console.log("Error :", error);

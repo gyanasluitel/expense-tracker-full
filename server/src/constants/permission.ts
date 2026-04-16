@@ -47,6 +47,22 @@ const appPermissions = {
         name: "DELETE_USERS",
         description: "Delete user accounts"
     },
+    CREATE_CATEGORIES: {
+        name: "CREATE_CATEGORIES",
+        description: "Create new categories"
+    },
+    VIEW_CATEGORIES: {
+        name: "VIEW_CATEGORIES",
+        description: "View existing categories"
+    },
+    UPDATE_CATEGORIES: {
+        name: "UPDATE_CATEGORIES",
+        description: "Update existing categories"
+    },
+    DELETE_CATEGORIES: {
+        name: "DELETE_CATEGORIES",
+        description: "Delete existing categories"
+    }
 }
 
 export default appPermissions;

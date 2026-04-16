@@ -24,7 +24,6 @@ const Login = () => {
     const onSubmit = async (data: LoginFormData) => {
         try {
             // Read the documentation about "unwrap"
-            // Question will be asked to Umesh Bogati
             dispatch(loginUser(data)).unwrap();
 
             toast("Successful login", {type: "success"});

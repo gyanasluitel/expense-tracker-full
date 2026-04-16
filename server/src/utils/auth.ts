@@ -14,7 +14,7 @@ export const generateAccessToken = (user : UserWithRolesAndPermission, roles?: s
             permissions
         }, // payload
         config.JWT_SECRET,
-        { "expiresIn": "1m" }
+        { "expiresIn": "1d" }
     )
 }
 

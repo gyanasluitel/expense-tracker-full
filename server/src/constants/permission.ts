@@ -62,7 +62,16 @@ const appPermissions = {
     DELETE_CATEGORIES: {
         name: "DELETE_CATEGORIES",
         description: "Delete existing categories"
+    },
+    VIEW_TRANSACTIONS: {
+        name: "VIEW_TRANSACTIONS",
+        description: "View transactions"
     }
+};
+
+export const SelfPermissions = {
+    GRANTED: "GRANTED",
+    DENIED: "DENIED"
 }
 
 export default appPermissions;

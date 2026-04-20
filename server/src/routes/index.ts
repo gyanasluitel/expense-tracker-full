@@ -13,7 +13,7 @@ router.use("/auth", authRoutes);
 router.use("/users", userRoutes);
 router.use("/permissions", permissionRoutes);
 router.use("/roles", roleRoutes);
-router.use("/category", categoryRoutes);
+router.use("/categories", categoryRoutes);
 router.use("/transactions", transactionRoutes);
 
 export default router;

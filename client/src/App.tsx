@@ -6,11 +6,12 @@ import Router from './Router'
 import { clearTokens } from './utils/token';
 import { fetchMe } from './store/slices/userSlice';
 import { useEffect } from 'react';
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const dispatch = useAppDispatch();
   const { isAuthenticated, userId, loading } = useAppSelector(state => state.auth);
-  const user = useAppSelector(state => userId ? state.users.users[userId] : undefined);
 
   useEffect(() => {
     if (userId) {
@@ -31,9 +32,8 @@ function App() {
     <>
       <Navbar />
 
-      {user && <h1>Welcome {user.name}</h1>}
-
       <Router />
+      <ToastContainer position='top-right'  autoClose={4000} hideProgressBar={false} />
     </>
   )
 }

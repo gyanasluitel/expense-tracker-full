@@ -1,12 +1,14 @@
 import { NextFunction, Response } from "express";
 import { AuthRequest } from "./authenticate";
+import { SelfPermissions } from "../constants/permission";
 
 export interface AuthorizeOptions {
     permission: string;
+    selfPermissions?: string
 }
 
 export const authorizeWithPermission = (options: AuthorizeOptions) => {
-    const { permission } = options;
+    const { permission, selfPermissions } = options;
 
     return async (req: AuthRequest, res: Response, next: NextFunction) => {
         const user = req.user;
@@ -19,6 +21,12 @@ export const authorizeWithPermission = (options: AuthorizeOptions) => {
         if (user?.roles.includes("SUPER_ADMIN")) {
             return next();
         }
+
+        if (selfPermissions === SelfPermissions.GRANTED && 
+            (req.params.id === user.userId || req.query.id === user.userId)) {
+            return next();
+        }
+
 
         const userPermissions = user.permissions || [];
 

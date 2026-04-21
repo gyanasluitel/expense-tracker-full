@@ -23,6 +23,8 @@ export interface TransactionMeta {
     total: number;
     page: number;
     limit: number;    
+    totalIncome: number;
+    totalExpenses: number;
 }
 
 export interface PaginatedTransactions {

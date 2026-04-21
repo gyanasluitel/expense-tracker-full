@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useNavigate, Link } from "react-router";
 import {
     Box,
@@ -19,7 +19,7 @@ import {
     Typography,
 } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../hooks/storeHooks";
-import { fetchUserTransactions } from "../store/slices/transactionSlice";
+import { fetchRecentTransactions } from "../store/slices/transactionSlice";
 
 const formatCurrency = (amount: number) =>
     new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
@@ -74,25 +74,17 @@ const GuestHome = () => {
 const Dashboard = () => {
     const dispatch = useAppDispatch();
     const { userId } = useAppSelector((state) => state.auth);
-    const { userTransactions, loadingUserTransactions } = useAppSelector((state) => state.transactions);
+    const { recentTransactions, loadingRecentTransactions } = useAppSelector((state) => state.transactions);
+    const { totalIncome, totalExpenses } = recentTransactions.stats;
+    const netBalance = totalIncome - totalExpenses;
 
     useEffect(() => {
-        if (userId) dispatch(fetchUserTransactions({userId}));
+        if (userId) dispatch(fetchRecentTransactions({
+            userId,
+            page: 1,
+            limit: 5
+        }));
     }, [userId, dispatch]);
-
-    const { totalIncome, totalExpenses, netBalance } = useMemo(() => {
-        const totalIncome = userTransactions
-            .filter((t) => t.type === "Income")
-            .reduce((sum, t) => sum + t.amount, 0);
-        const totalExpenses = userTransactions
-            .filter((t) => t.type === "Expense")
-            .reduce((sum, t) => sum + t.amount, 0);
-        return { totalIncome, totalExpenses, netBalance: totalIncome - totalExpenses };
-    }, [userTransactions]);
-
-    const recentTransactions = userTransactions.slice(0, 5);
-
-    console.log({loadingUserTransactions})
 
     return (
         <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -131,11 +123,11 @@ const Dashboard = () => {
                 </Button>
             </Box>
 
-            {loadingUserTransactions ? (
+            {loadingRecentTransactions ? (
                 <Box display="flex" justifyContent="center" py={4}>
                     <CircularProgress />
                 </Box>
-            ) : recentTransactions.length === 0 ? (
+            ) : recentTransactions.data.length === 0 ? (
                 <Typography color="text.secondary" py={2}>
                     No transactions yet.{" "}
                     <Link to="/transactions/add">Add your first one.</Link>
@@ -153,7 +145,7 @@ const Dashboard = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {recentTransactions.map((t) => (
+                            {recentTransactions.data.map((t) => (
                                 <TableRow key={t.id} hover>
                                     <TableCell>{formatDate(t.date)}</TableCell>
                                     <TableCell>{t.description}</TableCell>
